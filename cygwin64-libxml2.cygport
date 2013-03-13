@@ -1,0 +1,41 @@
+CROSS_HOST="x86_64-pc-cygwin"
+inherit cross
+
+NAME="cygwin64-libxml2"
+VERSION=2.9.0
+RELEASE=2
+CATEGORY="Devel"
+SUMMARY="GNOME XML library for Cygwin 64bit toolchain"
+DESCRIPTION="Libxml2 is the XML C parser and toolkit developed for the GNOME
+project. XML itself is a metalanguage to design markup languages, i.e. text
+language where semantic and structure are added to the content using extra
+'markup' information enclosed between angle brackets. HTML is the most well-
+known markup language. Though the library is written in C, a variety of
+language bindings make it available in other environments."
+HOMEPAGE="http://xmlsoft.org/"
+SRC_URI="ftp://xmlsoft.org/libxml2/libxml2-${VERSION}.tar.gz"
+SRC_DIR="libxml2-${VERSION}"
+PATCH_URI="
+	http://pkgs.fedoraproject.org/cgit/libxml2.git/plain/libxml2-2.9.0-do-not-check-crc.patch?h=f18
+	2.9.0-threads.patch
+"
+
+DIFF_EXCLUDES="xmlversion.h setup.py"
+
+CYGCONF_ARGS="
+	--enable-ipv6
+	--with-history
+	--with-html-dir=/usr/share/doc
+	--with-html-subdir=${NAME}/html
+	--without-python
+"
+
+src_install() {
+	cd ${B}
+	cyginstall bin_PROGRAMS= man_MANS=
+
+	rm -fr ${D}${CROSS_DATADIR}/*doc/
+	rm -fr ${D}/usr/share/doc/
+}
+
+KEEP_LA_FILES="none"
